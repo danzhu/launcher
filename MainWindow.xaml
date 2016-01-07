@@ -1,0 +1,96 @@
+﻿<Window x:Class="Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Launcher"
+        mc:Ignorable="d"
+        Title="Launcher" Top="0" Left="0" FontSize="16"
+        AllowsTransparency="True" Background="Transparent"
+        WindowStyle="None" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
+        Loaded="Window_Loaded">
+    <Window.Resources>
+        <SolidColorBrush x:Key="foreground" Color="LightGray"/>
+
+        <Style x:Key="widget" TargetType="Frame"/>
+        <Style x:Key="text" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource foreground}"/>
+        </Style>
+        <Style x:Key="desc" TargetType="TextBlock" BasedOn="{StaticResource text}">
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+        <Style x:Key="title" TargetType="TextBlock" BasedOn="{StaticResource text}">
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style x:Key="input" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="{StaticResource foreground}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <Style x:Key="list" TargetType="ListBox">
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="Background" Value="#FF252526"/>
+            <Setter Property="Foreground" Value="LightGray"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MinWidth" Value="200"/>
+            <Setter Property="MaxHeight" Value="360"/>
+        </Style>
+        <Style x:Key="info" TargetType="Border">
+            <Setter Property="Background" Value="#FF3E3E42"/>
+            <Setter Property="MinWidth" Value="240"/>
+            <Setter Property="Padding" Value="10, 5"/>
+            <Setter Property="CornerRadius" Value="5"/>
+        </Style>
+        <Style x:Key="listTemplate" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="border" Padding="2, 0">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="#FF007ACC"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Frame Name="widget" Grid.ColumnSpan="2" Style="{StaticResource widget}"
+               NavigationUIVisibility="Hidden"/>
+        <TextBox Name="input" Grid.Row="1" Grid.ColumnSpan="2"
+                 Style="{StaticResource input}" UndoLimit="0"
+                 TextChanged="input_TextChanged" PreviewKeyDown="input_KeyDown"/>
+        <ListBox Name="completion" Grid.Row="2" VerticalAlignment="Top"
+                 Style="{StaticResource list}" ItemContainerStyle="{StaticResource listTemplate}"
+                 SelectionChanged="completion_SelectionChanged"/>
+        <Border Grid.Row="2" Grid.Column="1" VerticalAlignment="Top"
+                Style="{StaticResource info}">
+            <StackPanel>
+                <TextBlock Name="usageTextBlock" Style="{StaticResource title}"
+                           Visibility="Collapsed"/>
+                <TextBlock Name="argTextBlock" Style="{StaticResource desc}"
+                           Visibility="Collapsed"/>
+                <TextBlock Name="infoTextBlock" Style="{StaticResource text}"
+                           Visibility="Collapsed"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
