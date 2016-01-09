@@ -42,16 +42,27 @@ namespace Launcher
 
             noMatch.Content = "No completion";
         }
-        
+
         public void UpdateText(TextBlock tb, string text = null)
         {
-            if (text != null)
+            StackPanel panel = (StackPanel)tb.Parent;
+            Border container = (Border)panel.Parent;
+            if (!string.IsNullOrWhiteSpace(text))
             {
                 tb.Text = text;
                 tb.Visibility = Visibility.Visible;
+                container.Visibility = Visibility.Visible;
+                return;
             }
-            else
-                tb.Visibility = Visibility.Collapsed;
+
+            tb.Visibility = Visibility.Collapsed;
+
+            foreach (TextBlock t in panel.Children)
+            {
+                if (t.Visibility == Visibility.Visible)
+                    return;
+            }
+            container.Visibility = Visibility.Collapsed;
         }
 
         public void UpdateCompletion()
@@ -72,9 +83,11 @@ namespace Launcher
             usage += cmd.Usage;
             UpdateText(usageTextBlock, usage);
 
+            UpdateText(descTextBlock, cmd.Info);
+
             // Find parameter info
             string info = cmd.Parameters.ElementAtOrDefault(leaf.FirstUnmatchedParam)?.Info;
-            UpdateText(argTextBlock, info != null ? info : cmd.Info);
+            UpdateText(argTextBlock, info);
 
             // Update completions
             completion.Items.Clear();
@@ -134,8 +147,8 @@ namespace Launcher
         public void DisplayException(Exception e)
         {
             UpdateText(usageTextBlock, e.GetType().Name);
-            UpdateText(argTextBlock, e.Message);
-            UpdateText(infoTextBlock);
+            UpdateText(descTextBlock, e.Message);
+            UpdateText(argTextBlock);
         }
 
         public void ClearInput()

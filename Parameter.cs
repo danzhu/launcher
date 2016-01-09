@@ -90,6 +90,7 @@ namespace Launcher
             string text = tokens.Text();
             Command cmd = Commands.Find(c => c.Name == text);
             if (cmd == null)
+                // TODO: this fails auto completion when option is completed
                 return MatchResult.Failed;
 
             tokens.Dequeue();
@@ -126,6 +127,7 @@ namespace Launcher
                 tokens.Dequeue();
                 lvl.Arguments.Add(op.Name, true);
             }
+            // TODO: return Matched if every single option is matched
             return MatchResult.Extensible;
         }
 
@@ -160,15 +162,13 @@ namespace Launcher
                 return MatchResult.Failed;
 
             lvl.Arguments.Add(tokens.Dequeue().Text);
-            // TODO: text removes previous auto completion
-            return MatchResult.Partial;
+            return MatchResult.Extensible;
         }
     }
 
     public enum MatchResult
     {
         Failed,
-        Partial,
         Matched,
         Extensible
     }

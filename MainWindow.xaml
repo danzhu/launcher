@@ -5,16 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Launcher"
         mc:Ignorable="d"
-        Title="Launcher" Top="0" Left="0" FontSize="16"
+        Title="Launcher" Top="0" Left="0" FontSize="16" MaxWidth="720"
         AllowsTransparency="True" Background="Transparent"
         WindowStyle="None" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight"
         Loaded="Window_Loaded">
     <Window.Resources>
+        <!--brushes-->
         <SolidColorBrush x:Key="foreground" Color="LightGray"/>
-
+        <SolidColorBrush x:Key="listBackground" Color="#FF252526"/>
+        <SolidColorBrush x:Key="infoBackground" Color="#FF3E3E42"/>
+        <SolidColorBrush x:Key="selectionBackground" Color="#FF007ACC"/>
+        <!--styles-->
         <Style x:Key="widget" TargetType="Frame"/>
         <Style x:Key="text" TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource foreground}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
         <Style x:Key="desc" TargetType="TextBlock" BasedOn="{StaticResource text}">
             <Setter Property="FontStyle" Value="Italic"/>
@@ -30,15 +35,14 @@
         </Style>
         <Style x:Key="list" TargetType="ListBox">
             <Setter Property="FontFamily" Value="Consolas"/>
-            <Setter Property="Background" Value="#FF252526"/>
+            <Setter Property="Background" Value="{StaticResource listBackground}"/>
             <Setter Property="Foreground" Value="LightGray"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="MinWidth" Value="200"/>
             <Setter Property="MaxHeight" Value="360"/>
         </Style>
         <Style x:Key="info" TargetType="Border">
-            <Setter Property="Background" Value="#FF3E3E42"/>
-            <Setter Property="MinWidth" Value="240"/>
+            <Setter Property="Background" Value="{StaticResource infoBackground}"/>
             <Setter Property="Padding" Value="10, 5"/>
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
@@ -51,11 +55,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="border" Property="Background">
-                                    <Setter.Value>
-                                        <SolidColorBrush Color="#FF007ACC"/>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter TargetName="border" Property="Background"
+                                        Value="{StaticResource selectionBackground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -68,26 +69,32 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Frame Name="widget" Grid.ColumnSpan="2" Style="{StaticResource widget}"
                NavigationUIVisibility="Hidden"/>
-        <TextBox Name="input" Grid.Row="1" Grid.ColumnSpan="2"
-                 Style="{StaticResource input}" UndoLimit="0"
-                 TextChanged="input_TextChanged" PreviewKeyDown="input_KeyDown"/>
-        <ListBox Name="completion" Grid.Row="2" VerticalAlignment="Top"
-                 Style="{StaticResource list}" ItemContainerStyle="{StaticResource listTemplate}"
-                 SelectionChanged="completion_SelectionChanged"/>
-        <Border Grid.Row="2" Grid.Column="1" VerticalAlignment="Top"
-                Style="{StaticResource info}">
+        <Border Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource info}">
             <StackPanel>
-                <TextBlock Name="usageTextBlock" Style="{StaticResource title}"
+                <TextBlock Name="usageTextBlock" Style="{StaticResource title}" Text="{Binding Usage}"/>
+                <TextBlock Name="descTextBlock" Style="{StaticResource text}"
                            Visibility="Collapsed"/>
                 <TextBlock Name="argTextBlock" Style="{StaticResource desc}"
                            Visibility="Collapsed"/>
+            </StackPanel>
+        </Border>
+        <TextBox Name="input" Grid.Row="2" Grid.ColumnSpan="2"
+                 Style="{StaticResource input}" UndoLimit="0"
+                 TextChanged="input_TextChanged" PreviewKeyDown="input_KeyDown"/>
+        <ListBox Name="completion" Grid.Row="3" VerticalAlignment="Top"
+                 Style="{StaticResource list}" ItemContainerStyle="{StaticResource listTemplate}"
+                 SelectionChanged="completion_SelectionChanged"/>
+        <Border Grid.Row="3" Grid.Column="1" VerticalAlignment="Top"
+                Style="{StaticResource info}">
+            <StackPanel>
                 <TextBlock Name="infoTextBlock" Style="{StaticResource text}"
                            Visibility="Collapsed"/>
             </StackPanel>

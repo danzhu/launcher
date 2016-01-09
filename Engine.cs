@@ -69,7 +69,12 @@ namespace Launcher
             Level lvl = ses.Input.Level;
             List<Parameter> param = lvl.Command.Parameters;
             for (int i = lvl.FirstUnmatchedParam; i < param.Count; i++)
+            {
                 param[i].Complete(ses.Completion, ses.Input.Text, ses.Leaf.Arguments);
+                // no auto completion after required parameter
+                if (param[i].Required)
+                    break;
+            }
 
             // Auto launch
             if (AutoLaunch && ses.Completion.Completions.Count == 1)

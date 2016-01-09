@@ -42,17 +42,17 @@ namespace Launcher
 
                 MatchResult res = p.Analyze(ses, tokens, lvl);
 
+                // if no tokens left, leave unmatched alone (to match previous params)
+                // else, update so that later ones would not go back before the param
+                // this also ensures auto completion even if the word is already completed
+                // TODO: unmatched might jump back (e.g. "task name -s")
+                if (tokens.Count == 0)
+                    break;
+
                 if (res == MatchResult.Matched)
                     lvl.FirstUnmatchedParam = i + 1;
                 else if (res == MatchResult.Extensible)
                     lvl.FirstUnmatchedParam = i;
-                else if (res == MatchResult.Partial)
-                {
-                    // if no tokens left, leave unmatched alone (to match previous params)
-                    // else, update so that later ones would not go back before the param
-                    if (tokens.Count > 0)
-                        lvl.FirstUnmatchedParam = i;
-                }
                 else if (p.Required) // implied "Failed"
                 {
                     // TODO: handle "required"
